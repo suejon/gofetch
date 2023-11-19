@@ -51,7 +51,7 @@ export default function Header() {
               <Link
                 key={item.name}
                 className="block px-4 py-2 text-lg font-semibold text-gray-600 hover:text-black dark:text-white dark:hover:text-gray-200"
-                href={`/${item.path}`}
+                href={item.path}
               >
                 {item.name}
               </Link>
@@ -65,7 +65,7 @@ export default function Header() {
           <Link
             key={item.name}
             className="ml-4 text-base font-medium text-gray-600 hover:text-black dark:text-white dark:hover:text-gray-200"
-            href={`/${item.path}`}
+            href={item.path}
           >
             {item.name}
           </Link>

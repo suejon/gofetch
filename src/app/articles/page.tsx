@@ -1,15 +1,13 @@
 import ArticleCard from "@/components/ui/ArticleCard";
+import { getArticles } from "@/lib/server/article";
 
-export default function Articles() {
-  const count = 2;
-  const l = Array.from({ length: count }, (_, i) => i);
+export default async function Articles() {
+  const articles = await getArticles();
   return (
     <div>
       <p>Hello, welcome to articles</p>
       <div className="flex space-x-2 p-4">
-        {l.map((_, i) => (
-          <ArticleCard id={i} />
-        ))}
+        {articles.map((article) => (<ArticleCard {...article} />))}
       </div>
     </div>
   )

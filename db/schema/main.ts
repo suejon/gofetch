@@ -8,6 +8,7 @@ export const article = mySqlTable("article", {
   id: serial("id").primaryKey(),
   articleId: int("article_id").notNull(),
   title: varchar("title", { length: 256 }).notNull(),
+  author: varchar("author", { length: 256 }),
   content: text("content").notNull(),
   image: varchar("image", { length: 512 }).notNull(),
   thumbnail: varchar("thumbnail", { length: 512 }).notNull(),

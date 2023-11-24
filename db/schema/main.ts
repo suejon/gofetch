@@ -13,8 +13,8 @@ export const article = mySqlTable("article", {
   image: varchar("image", { length: 512 }).notNull(),
   thumbnail: varchar("thumbnail", { length: 512 }).notNull(),
   sourceUrl: varchar("source_url", { length: 512 }).notNull(),
-  hidden: boolean("hidden").default(true).notNull(),
-  original: boolean("original").default(false).notNull(),
+  hidden: boolean("hidden").default(true).notNull(),      // NOTE: all articles will be hidden until marked available 
+  original: boolean("original").default(false).notNull(), // NOTE: an articleId will onnly have one original
   lang: varchar("lang", { length: 2 }).notNull(),
   lf: varchar("lang_framework", { length: 256 }).notNull(),
   lf_level: varchar("lf_level", { length: 256 }).notNull(),
@@ -31,7 +31,8 @@ export const articleRelations = relations(article, ({ many, one }) => ({
   articleToTags: many(articleTag),
   lang: one(language, { fields: [article.lang], references: [language.code] }),
   lf: one(languageFramework, { fields: [article.lf], references: [languageFramework.name] }),
-  lf_level: one(lf_level, { fields: [article.lf_level, article.lf], references: [lf_level.name, lf_level.languageFramework] })
+  lf_level: one(lf_level, { fields: [article.lf_level, article.lf], references: [lf_level.name, lf_level.languageFramework] }),
+  sentences: many(articleSentence)
 }))
 
 export const tag = mySqlTable("tag", {
@@ -81,7 +82,7 @@ export const lf_level = mySqlTable("lf_level", {
   order: int("order").notNull()
 },
   (lf_level) => ({
-    compoundKey: primaryKey(lf_level.name, lf_level.languageFramework)
+    compoundKey: primaryKey({ columns: [lf_level.name, lf_level.languageFramework] })
   }));
 
 
@@ -100,3 +101,16 @@ export const avrArtcle = relations(articleVariantRaw, ({ one }) => ({
   article: one(article, { fields: [articleVariantRaw.article], references: [article.id] })
 }))
 
+export const articleSentence = mySqlTable("article_sentence", {
+  articleId: int("article_id").primaryKey(),
+  content: text("content").notNull(),
+  order: int("order").notNull()
+}, (table) => ({
+  articleId: index("article_id_idx").on(table.articleId)
+}));
+
+export const articleSentenceRelations = relations(articleSentence, ({ one }) => {
+  return ({
+    article: one(article, { fields: [articleSentence.articleId], references: [article.id] })
+  });
+})

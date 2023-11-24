@@ -27,9 +27,7 @@ export const getLanguageProficiencyLevels = async (lf: string) =>
     where: eq(lf_level.languageFramework, lf),
   });
 
-export const getLanguageProficiencyLevelsForArticle = async (
-  articleId: number,
-) => {
+export const getArticleDifficultyList = async (articleId: number) => {
   const result = await db
     .select({ lf_level: article.lf_level })
     .from(article)

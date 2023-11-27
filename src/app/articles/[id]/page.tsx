@@ -3,7 +3,7 @@ import { getArticle } from "@/lib/server/article";
 import { formatDistance } from "date-fns";
 import Image from "next/image";
 import splash from "../../../../public/splash.jpg"; // TODO: replace with dynamic Image
-import LanguageProficiencyDropdown from "@/components/ui/LanguageProficiencyDropdown";
+import LanguageProficiencyButtonGroup from "@/components/ui/LanguageProficiencyButtonGroup";
 
 interface Props {
   params: { id: number };
@@ -31,7 +31,7 @@ export default async function Article({ params, searchParams }: Props) {
         <Badge variant="outline">{article.lang}</Badge>
         <Badge variant="destructive">{article.lf}</Badge>
         <Badge>{article.lf_level}</Badge>
-        <LanguageProficiencyDropdown
+        <LanguageProficiencyButtonGroup
           lf={article.lf}
           selectedLevel={article.lf_level}
           articleId={article.articleId}

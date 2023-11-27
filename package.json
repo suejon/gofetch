@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "push": "drizzle-kit push:mysql",
+    "drop": "drizzle-kit drop",
     "studio": "drizzle-kit studio"
   },
   "dependencies": {

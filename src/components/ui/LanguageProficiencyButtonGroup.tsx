@@ -1,4 +1,4 @@
-import { getLanguageProficiencyLevelsForArticle } from "@/lib/server/article";
+import { getArticleDifficultyList } from "@/lib/server/article";
 import Link from "next/link";
 import { Button } from "./button";
 
@@ -9,8 +9,9 @@ interface Props {
 }
 
 export default async function LanguageProficiencyButtonGroup(props: Props) {
-  const languageProficiencyLevels =
-    await getLanguageProficiencyLevelsForArticle(props.articleId);
+  const languageProficiencyLevels = await getArticleDifficultyList(
+    props.articleId,
+  );
   return (
     <div className="flex gap-2">
       {languageProficiencyLevels.map((lpl) => (

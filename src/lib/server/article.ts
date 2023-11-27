@@ -1,5 +1,5 @@
 import { and, db, eq } from "@db/index";
-import { article, lf_level } from "@db/schema/main";
+import { article, articleSentence, lf_level } from "@db/schema/main";
 
 export const getArticles = async () => {
   return await db.query.article.findMany({
@@ -14,12 +14,23 @@ export const getArticles = async () => {
   });
 };
 export const getArticle = async (article_id: number, lf_level: string) => {
-  return await db.query.article.findFirst({
-    where: and(
-      eq(article.articleId, article_id),
-      eq(article.lf_level, lf_level),
-    ),
-  });
+  const res = await db
+    .select()
+    .from(article)
+    .leftJoin(articleSentence, eq(article.id, articleSentence.articleId))
+    .where(
+      and(eq(article.articleId, article_id), eq(article.lf_level, lf_level)),
+    );
+  if (res.length === 0) {
+    return null;
+  }
+  return res[0];
+  // return await db.query.article.findFirst({
+  //   where: and(
+  //     eq(article.articleId, article_id),
+  //     eq(article.lf_level, lf_level),
+  //   ),
+  // });
 };
 
 export const getLanguageProficiencyLevels = async (lf: string) =>

@@ -10,7 +10,10 @@ interface Props {
   searchParams: { level: string };
 }
 export default async function Article({ params, searchParams }: Props) {
-  const article = await getArticle(params.id, searchParams.level);
+  const { article, article_sentence } = await getArticle(
+    params.id,
+    searchParams.level,
+  );
 
   if (!article) {
     throw Error("Article not found");

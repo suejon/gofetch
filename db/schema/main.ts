@@ -138,7 +138,7 @@ export const avrArtcle = relations(articleVariantRaw, ({ one }) => ({
 export const articleSentence = mySqlTable(
   "article_sentence",
   {
-    articleId: int("article_id"),
+    articleId: int("article_id").notNull(),
     source_text: text("source_text").notNull(),
     position: int("position").notNull(),
   },
@@ -170,7 +170,7 @@ export const sentenceTranslation = mySqlTable(
     content: text("content").notNull(),
     srcLang: varchar("src_lang", { length: 2 }).notNull(),
     trgLang: varchar("trg_lang", { length: 2 }).notNull(),
-    order: int("order").notNull(),
+    position: int("position").notNull(),
   },
   (table) => ({
     compoundKey: primaryKey({

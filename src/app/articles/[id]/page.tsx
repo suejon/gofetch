@@ -2,21 +2,20 @@ import { Badge } from "@/components/ui/badge";
 import { getArticle } from "@/lib/server/article";
 import { formatDistance } from "date-fns";
 import Image from "next/image";
-import splash from "../../../../public/splash.jpg"; // TODO: replace with dynamic Image
+import splash from "../../../../public/bedbug.jpg"; // TODO: replace with dynamic Image
 import LanguageProficiencyButtonGroup from "@/components/ui/LanguageProficiencyButtonGroup";
+import SentenceGroup from "@/components/ui/SentenceGroup";
+import { notFound } from "next/navigation";
 
 interface Props {
   params: { id: number };
   searchParams: { level: string };
 }
 export default async function Article({ params, searchParams }: Props) {
-  const { article, article_sentence } = await getArticle(
-    params.id,
-    searchParams.level,
-  );
+  const [article, sentences] = await getArticle(params.id, searchParams.level);
 
   if (!article) {
-    throw Error("Article not found");
+    notFound();
   }
 
   return (
@@ -31,9 +30,9 @@ export default async function Article({ params, searchParams }: Props) {
         })}
       </h2>
       <div className="flex gap-2">
-        <Badge variant="outline">{article.lang}</Badge>
-        <Badge variant="destructive">{article.lf}</Badge>
-        <Badge>{article.lf_level}</Badge>
+        <Badge variant="destructive">{article.lang}</Badge>
+        {/* <Badge variant="destructive">{article.lf}</Badge> */}
+        {/* <Badge>{article.lf_level}</Badge> */}
         <LanguageProficiencyButtonGroup
           lf={article.lf}
           selectedLevel={article.lf_level}
@@ -48,8 +47,14 @@ export default async function Article({ params, searchParams }: Props) {
         height={400}
         blurDataURL="/placeholder.webp"
       />
-      <article className="prose dark:prose-dark max-w-none">
-        <p className="text-xl">{article.content}</p>
+      <article className="prose dark:prose-dark max-w-none space-y-6">
+        {sentences.map((s) => (
+          <SentenceGroup
+            key={s.source_text}
+            sourceText={s.source_text}
+            targetText={s.target_text}
+          />
+        ))}
       </article>
     </main>
   );

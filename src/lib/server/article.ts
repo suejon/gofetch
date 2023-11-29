@@ -1,5 +1,10 @@
-import { and, db, eq } from "@db/index";
-import { article, articleSentence, lf_level } from "@db/schema/main";
+import { and, asc, db, eq } from "@db/index";
+import {
+  article,
+  articleSentence,
+  lf_level,
+  sentenceTranslation,
+} from "@db/schema/main";
 
 export const getArticles = async () => {
   return await db.query.article.findMany({
@@ -14,23 +19,36 @@ export const getArticles = async () => {
   });
 };
 export const getArticle = async (article_id: number, lf_level: string) => {
-  const res = await db
-    .select()
-    .from(article)
-    .leftJoin(articleSentence, eq(article.id, articleSentence.articleId))
-    .where(
-      and(eq(article.articleId, article_id), eq(article.lf_level, lf_level)),
-    );
-  if (res.length === 0) {
-    return null;
-  }
-  return res[0];
-  // return await db.query.article.findFirst({
-  //   where: and(
-  //     eq(article.articleId, article_id),
-  //     eq(article.lf_level, lf_level),
-  //   ),
+  const articleData = await db.query.article.findFirst({
+    where: and(
+      eq(article.articleId, article_id),
+      eq(article.lf_level, lf_level),
+    ),
+  });
+
+  if (!articleData) return [null, []];
+
+  const sentences = await db
+    .select({
+      source_text: articleSentence.source_text,
+      target_text: sentenceTranslation.content,
+      position: articleSentence.position,
+    })
+    .from(articleSentence)
+    .leftJoin(
+      sentenceTranslation,
+      and(
+        eq(articleSentence.articleId, sentenceTranslation.source),
+        eq(articleSentence.position, sentenceTranslation.position),
+      ),
+    )
+    .orderBy(asc(articleSentence.position));
+
+  // const sentences = await db.query.articleSentence.findMany({
+  //   where: eq(articleSentence.articleId, articleData.id),
+  //   orderBy: [asc(articleSentence.position)],
   // });
+  return [articleData, sentences];
 };
 
 export const getLanguageProficiencyLevels = async (lf: string) =>

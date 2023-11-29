@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "./button";
+import img from "../../../public/bedbug.jpg";
 
 interface Props {
   articleId: number;
@@ -20,7 +21,7 @@ export default function ArticleCard({
   return (
     <div className="border-black border-2 rounded-md flex-col gap-2 p-2 max-w-lg">
       <Image
-        src={thumbnail}
+        src={img}
         width={200}
         height={200}
         alt="thumbnail"

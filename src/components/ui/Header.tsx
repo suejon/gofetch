@@ -1,27 +1,15 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { SheetTrigger, SheetContent, Sheet } from "@/components/ui/sheet"
-import { siteConfig } from "@/config/site"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { SheetTrigger, SheetContent, Sheet } from "@/components/ui/sheet";
+import { siteConfig } from "@/config/site";
+import { Scroll } from "lucide-react";
 
 export default function Header() {
   return (
     <header className="flex items-center justify-between px-6 py-4 md:px-8 lg:px-12">
       <Link href="/">
-        <svg
-          className=" h-6 w-6"
-          fill="none"
-          height="24"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-          viewBox="0 0 24 24"
-          width="24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path d="m8 3 4 8 5-5 5 15H2L8 3z" />
-        </svg>
-        <span className="sr-only">Company Logo</span>
+        <Scroll />
+        <span className="sr-only">gofetch</span>
       </Link>
       <Sheet>
         <SheetTrigger asChild>
@@ -73,5 +61,5 @@ export default function Header() {
         <Button className="ml-4">Login</Button>
       </div>
     </header>
-  )
+  );
 }

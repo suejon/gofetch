@@ -67,12 +67,10 @@ export const tagRelation = relations(tag, ({ many }) => ({
 }));
 
 export const articleTag = mySqlTable("article_tags", {
-  article: int("article")
-    .notNull()
-    .references(() => article.articleId),
-  tag: varchar("tag", { length: 256 })
-    .notNull()
-    .references(() => tag.name),
+  article: int("article").notNull(),
+  // .references(() => article.articleId),
+  tag: varchar("tag", { length: 256 }).notNull(),
+  // .references(() => tag.name),
 });
 
 export const language = mySqlTable("language", {
@@ -105,9 +103,8 @@ export const lf_level = mySqlTable(
   "lf_level",
   {
     name: varchar("name", { length: 256 }).notNull(),
-    languageFramework: varchar("language_framework", { length: 256 })
-      .notNull()
-      .references(() => languageFramework.name),
+    languageFramework: varchar("language_framework", { length: 256 }).notNull(),
+    // .references(() => languageFramework.name),
     order: int("order").notNull(),
   },
   (lf_level) => ({
@@ -174,7 +171,7 @@ export const sentenceTranslation = mySqlTable(
   },
   (table) => ({
     compoundKey: primaryKey({
-      columns: [table.source, table.trgLang],
+      columns: [table.source, table.trgLang, table.position],
     }),
   }),
 );

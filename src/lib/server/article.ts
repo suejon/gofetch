@@ -18,7 +18,15 @@ export const getArticles = async () => {
     where: and(eq(article.hidden, false), eq(article.original, true)),
   });
 };
-export const getArticle = async (article_id: number, lf_level: string) => {
+export const getArticle = async (
+  article_id: number,
+  lf_level: string,
+): Promise<
+  [
+    typeof article.$inferSelect | undefined,
+    { source_text: string; target_text: string | null; position: number }[],
+  ]
+> => {
   const articleData = await db.query.article.findFirst({
     where: and(
       eq(article.articleId, article_id),
@@ -26,7 +34,7 @@ export const getArticle = async (article_id: number, lf_level: string) => {
     ),
   });
 
-  if (!articleData) return [null, []];
+  // if (!articleData) return [null, []];
 
   const sentences = await db
     .select({
@@ -44,10 +52,6 @@ export const getArticle = async (article_id: number, lf_level: string) => {
     )
     .orderBy(asc(articleSentence.position));
 
-  // const sentences = await db.query.articleSentence.findMany({
-  //   where: eq(articleSentence.articleId, articleData.id),
-  //   orderBy: [asc(articleSentence.position)],
-  // });
   return [articleData, sentences];
 };
 

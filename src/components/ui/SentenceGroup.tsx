@@ -1,6 +1,6 @@
 interface Props {
   sourceText: string;
-  targetText: string;
+  targetText: string | null;
 }
 
 export default function SentenceGroup(props: Props) {

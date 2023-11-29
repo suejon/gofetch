@@ -1,11 +1,11 @@
+import LanguageProficiencyButtonGroup from "@/components/ui/LanguageProficiencyButtonGroup";
+import SentenceGroup from "@/components/ui/SentenceGroup";
 import { Badge } from "@/components/ui/badge";
 import { getArticle } from "@/lib/server/article";
 import { formatDistance } from "date-fns";
 import Image from "next/image";
-import splash from "../../../../public/bedbug.jpg"; // TODO: replace with dynamic Image
-import LanguageProficiencyButtonGroup from "@/components/ui/LanguageProficiencyButtonGroup";
-import SentenceGroup from "@/components/ui/SentenceGroup";
 import { notFound } from "next/navigation";
+import splash from "../../../../public/bedbug.jpg"; // TODO: replace with dynamic Image
 
 interface Props {
   params: { id: number };

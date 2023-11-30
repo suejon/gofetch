@@ -50,6 +50,7 @@ export const getArticle = async (
         eq(articleSentence.position, sentenceTranslation.position),
       ),
     )
+    .where(eq(articleSentence.articleId, articleData?.id))
     .orderBy(asc(articleSentence.position));
 
   return [articleData, sentences];

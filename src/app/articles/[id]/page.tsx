@@ -31,8 +31,6 @@ export default async function Article({ params, searchParams }: Props) {
       </h2>
       <div className="flex gap-2">
         <Badge variant="destructive">{article.lang}</Badge>
-        {/* <Badge variant="destructive">{article.lf}</Badge> */}
-        {/* <Badge>{article.lf_level}</Badge> */}
         <LanguageProficiencyButtonGroup
           lf={article.lf}
           selectedLevel={article.lf_level}

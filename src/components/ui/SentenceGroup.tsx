@@ -5,7 +5,7 @@ interface Props {
 
 export default function SentenceGroup(props: Props) {
   return (
-    <div className="">
+    <div className="lg:hover:bg-gray-200">
       <p className="font-bold">{props.sourceText}</p>
       <p className="font-thin">{props.targetText}</p>
     </div>

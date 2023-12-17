@@ -38,7 +38,7 @@ export const getArticle = async (
     ),
   });
 
-  // if (!articleData) return [null, []];
+  if (!articleData) throw Error("Article not found");
 
   const sentences = await db
     .select({
@@ -54,7 +54,7 @@ export const getArticle = async (
         eq(articleSentence.position, sentenceTranslation.position),
       ),
     )
-    .where(eq(articleSentence.articleId, articleData?.id))
+    .where(eq(articleSentence.articleId, articleData.id))
     .orderBy(asc(articleSentence.position));
   const articleWords = await db
     .select({
@@ -70,7 +70,7 @@ export const getArticle = async (
     .leftJoin(morpheme, eq(articleMorpheme.morpeheme, morpheme.name))
     .leftJoin(entry, eq(morpheme.name, entry.morpheme))
     .groupBy(articleMorpheme.morpeheme, articleMorpheme.offset)
-    .where(eq(articleMorpheme.article, articleData?.id))
+    .where(eq(articleMorpheme.article, articleData.id))
     .orderBy(articleMorpheme.offset);
 
   // TODO: do this at the sql level somehow

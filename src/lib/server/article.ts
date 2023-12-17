@@ -1,8 +1,9 @@
-import { and, asc, db, eq } from "@db/index";
+import { and, asc, db, eq, sql } from "@db/index";
 import {
   article,
   articleMorpheme,
   articleSentence,
+  entry,
   lf_level,
   morpheme,
   sentenceTranslation,
@@ -55,16 +56,20 @@ export const getArticle = async (
     )
     .where(eq(articleSentence.articleId, articleData?.id))
     .orderBy(asc(articleSentence.position));
-
   const articleWords = await db
     .select({
       word: articleMorpheme.morpeheme,
       offset: articleMorpheme.offset,
       root: morpheme.root,
       lang: morpheme.lang,
+      entries: sql<
+        { name: string; type: string; value: string }[]
+      >`cast(concat('[', group_concat(distinct json_object('name', ${entry.morpheme}, 'type', ${entry.type}, 'value', ${entry.value})), ']') as json)`,
     })
     .from(articleMorpheme)
     .leftJoin(morpheme, eq(articleMorpheme.morpeheme, morpheme.name))
+    .leftJoin(entry, eq(morpheme.name, entry.morpheme))
+    .groupBy(articleMorpheme.morpeheme, articleMorpheme.offset)
     .where(eq(articleMorpheme.article, articleData?.id))
     .orderBy(articleMorpheme.offset);
 

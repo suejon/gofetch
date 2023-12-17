@@ -1,8 +1,10 @@
 import { and, asc, db, eq } from "@db/index";
 import {
   article,
+  articleMorpheme,
   articleSentence,
   lf_level,
+  morpheme,
   sentenceTranslation,
 } from "@db/schema/main";
 
@@ -25,6 +27,7 @@ export const getArticle = async (
   [
     typeof article.$inferSelect | undefined,
     { source_text: string; target_text: string | null; position: number }[],
+    Word[],
   ]
 > => {
   const articleData = await db.query.article.findFirst({
@@ -53,7 +56,21 @@ export const getArticle = async (
     .where(eq(articleSentence.articleId, articleData?.id))
     .orderBy(asc(articleSentence.position));
 
-  return [articleData, sentences];
+  const articleWords = await db
+    .select({
+      word: articleMorpheme.morpeheme,
+      offset: articleMorpheme.offset,
+      root: morpheme.root,
+      lang: morpheme.lang,
+    })
+    .from(articleMorpheme)
+    .leftJoin(morpheme, eq(articleMorpheme.morpeheme, morpheme.name))
+    .where(eq(articleMorpheme.article, articleData?.id))
+    .orderBy(articleMorpheme.offset);
+
+  // TODO: do this at the sql level somehow
+  const mapped = articleWords.map((w, i) => ({ index: i, ...w }));
+  return [articleData, sentences, mapped];
 };
 
 export const getLanguageProficiencyLevels = async (lf: string) =>

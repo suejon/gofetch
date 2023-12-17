@@ -16,11 +16,11 @@ export default async function Article() {
   return (
     <main className="flex flex-col items-center justify-center flex-grow p-6 space-y-8">
       <article className="prose dark:prose-dark max-w-none space-y-6">
-        <div className="">
-          {tokens.map((t, i) => (
-            <WordBox key={t + i} entry={lookup[t]} word={t} />
-          ))}
-        </div>
+        {/* <div className=""> */}
+        {/*   {tokens.map((t, i) => ( */}
+        {/*     <WordBox key={t + i} entry={lookup[t]} word={t} /> */}
+        {/*   ))} */}
+        {/* </div> */}
       </article>
     </main>
   );

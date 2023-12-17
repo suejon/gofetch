@@ -51,6 +51,7 @@ export const articleRelations = relations(article, ({ many, one }) => ({
     references: [lf_level.name, lf_level.languageFramework],
   }),
   sentences: many(articleSentence),
+  words: many(articleMorpheme),
 }));
 
 export const tag = mySqlTable("tag", {
@@ -185,4 +186,61 @@ export const sentenceTranslationRelations = relations(
       trgLang: one(language),
     };
   },
+);
+
+export const morpheme = mySqlTable(
+  "morpheme",
+  {
+    name: varchar("name", { length: 255 }).notNull().primaryKey(),
+    root: varchar("root", { length: 30 }),
+    size: int("size").notNull(),
+    lang: varchar("lang", { length: 2 }).notNull(),
+    createdAt: timestamp("created_at")
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (table) => ({
+    morphemeId: index("name_idx").on(table.name),
+  }),
+);
+
+export const morphemeRelations = relations(morpheme, ({ many, one }) => {
+  return {
+    entries: many(entry),
+    lang: one(language),
+  };
+});
+
+export const entry = mySqlTable(
+  "entry",
+  {
+    morpheme: varchar("morpheme", { length: 255 }).notNull(),
+    type: varchar("type", { length: 25 }).notNull(),
+    value: text("value"),
+  },
+  (table) => ({
+    entry: index("entry").on(table.morpheme, table.type),
+    compoundKey: primaryKey({
+      columns: [table.morpheme, table.type],
+    }),
+  }),
+);
+
+export const entryRelations = relations(entry, ({ one }) => ({
+  morpheme: one(morpheme),
+}));
+
+export const articleMorpheme = mySqlTable(
+  "article_morpheme",
+  {
+    article: int("article").notNull(),
+    morpeheme: varchar("morpheme", { length: 255 }).notNull(),
+    offset: int("offset").notNull(),
+  },
+  (table) => ({
+    article_morpheme: index("article_morpheme").on(table.article),
+    compoundKey: primaryKey({
+      columns: [table.article, table.morpeheme, table.offset],
+    }),
+  }),
 );

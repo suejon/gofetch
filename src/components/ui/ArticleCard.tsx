@@ -19,14 +19,15 @@ export default function ArticleCard({
   lf_level,
 }: Props) {
   return (
-    <div className="border-black border-2 rounded-md flex-col gap-2 p-2 max-w-lg">
-      <Image
-        src={img}
-        width={200}
-        height={200}
-        alt="thumbnail"
-        blurDataURL="/placeholder.webp"
-      />
+    <div className="border-black border-2 rounded-md flex-col gap-2 p-4 max-w-lg">
+      <div className="flex justify-center h-72">
+        <Image
+          src={img}
+          style={{ objectFit: "cover" }}
+          alt="thumbnail"
+          blurDataURL="/placeholder.webp"
+        />
+      </div>
       <p className="text-xl">{title}</p>
       <Link
         className="float-right"

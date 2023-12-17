@@ -6,13 +6,18 @@ import { formatDistance } from "date-fns";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import splash from "../../../../public/bedbug.jpg"; // TODO: replace with dynamic Image
+import WordGroup from "@/components/ui/WordGroup";
+import ArticleText from "@/components/ui/ArticleText";
 
 interface Props {
   params: { id: number };
   searchParams: { level: string };
 }
 export default async function Article({ params, searchParams }: Props) {
-  const [article, sentences] = await getArticle(params.id, searchParams.level);
+  const [article, sentences, words] = await getArticle(
+    params.id,
+    searchParams.level,
+  );
 
   if (!article) {
     notFound();
@@ -31,8 +36,6 @@ export default async function Article({ params, searchParams }: Props) {
       </h2>
       <div className="flex gap-2">
         <Badge variant="destructive">{article.lang}</Badge>
-        {/* <Badge variant="destructive">{article.lf}</Badge> */}
-        {/* <Badge>{article.lf_level}</Badge> */}
         <LanguageProficiencyButtonGroup
           lf={article.lf}
           selectedLevel={article.lf_level}
@@ -48,13 +51,7 @@ export default async function Article({ params, searchParams }: Props) {
         blurDataURL="/placeholder.webp"
       />
       <article className="prose dark:prose-dark max-w-none space-y-6">
-        {sentences.map((s) => (
-          <SentenceGroup
-            key={s.source_text}
-            sourceText={s.source_text}
-            targetText={s.target_text}
-          />
-        ))}
+        <ArticleText words={words} />
       </article>
     </main>
   );

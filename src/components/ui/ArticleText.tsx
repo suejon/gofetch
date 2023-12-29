@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import WordGroup from "./WordGroup";
+import { cn } from "@/lib/utils";
 
 interface Props {
   words: Word[];
@@ -9,9 +10,10 @@ interface Props {
 
 const getNextWordIndex = (
   words: Word[],
-  index: number,
+  index?: number,
   forward: boolean = true,
 ): number => {
+  if (index === undefined) return 0;
   if (
     ["josa", "punctuation", "space"].includes(
       words.at(index + (forward ? 1 : -1))?.entries?.[0]?.type ?? "",
@@ -65,16 +67,54 @@ export default function ArticleText({ words }: Props) {
     [selectedWord],
   );
 
-  return words.map((w) => (
-    <WordGroup
-      isSelected={
-        selectedWord?.word === w.word && selectedWord?.offset === w.offset
-      }
-      onClick={() => {
-        onWordClick(w);
-      }}
-      key={w.word + w.offset}
-      {...w}
-    />
-  ));
+  return (
+    <div>
+      <div
+        id="touch-area"
+        className={cn("relative lg:hidden", selectedWord ? "" : "hidden")}
+      >
+        <div
+          onClick={() => {
+            setSelectedWord(
+              words.at(getNextWordIndex(words, selectedWord?.index, false)) ??
+                null,
+            );
+
+            return console.log("previous");
+          }}
+          className="absolute top-0 left-0 h-96 w-1/3"
+        ></div>
+        <div
+          onClick={() => {
+            setSelectedWord(null);
+            return console.log("close");
+          }}
+          className="absolute top-0 left-1/3 h-96 w-1/3"
+        ></div>
+        <div
+          onClick={() => {
+            setSelectedWord(
+              words.at(getNextWordIndex(words, selectedWord?.index, true)) ??
+                null,
+            );
+
+            return console.log("next");
+          }}
+          className="absolute top-0 left-2/3 h-96 w-1/3"
+        ></div>
+      </div>
+      {words.map((w) => (
+        <WordGroup
+          isSelected={
+            selectedWord?.word === w.word && selectedWord?.offset === w.offset
+          }
+          onClick={() => {
+            onWordClick(w);
+          }}
+          key={w.word + w.offset}
+          {...w}
+        />
+      ))}
+    </div>
+  );
 }

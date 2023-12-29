@@ -74,32 +74,25 @@ export default function ArticleText({ words }: Props) {
         className={cn("relative lg:hidden", selectedWord ? "" : "hidden")}
       >
         <div
-          onClick={() => {
+          onClick={() =>
             setSelectedWord(
               words.at(getNextWordIndex(words, selectedWord?.index, false)) ??
                 null,
-            );
-
-            return console.log("previous");
-          }}
+            )
+          }
           className="absolute top-0 left-0 h-96 w-1/3"
         ></div>
         <div
-          onClick={() => {
-            setSelectedWord(null);
-            return console.log("close");
-          }}
+          onClick={() => setSelectedWord(null)}
           className="absolute top-0 left-1/3 h-96 w-1/3"
         ></div>
         <div
-          onClick={() => {
+          onClick={() =>
             setSelectedWord(
               words.at(getNextWordIndex(words, selectedWord?.index, true)) ??
                 null,
-            );
-
-            return console.log("next");
-          }}
+            )
+          }
           className="absolute top-0 left-2/3 h-96 w-1/3"
         ></div>
       </div>

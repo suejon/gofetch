@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import WordGroup from "./WordGroup";
 import { cn } from "@/lib/utils";
+import TouchAreaOverlay from "./TouchAreaOverlay";
 
 interface Props {
   words: Word[];
@@ -69,33 +70,22 @@ export default function ArticleText({ words }: Props) {
 
   return (
     <div>
-      <div
-        id="touch-area"
-        className={cn("relative lg:hidden", selectedWord ? "" : "hidden")}
-      >
-        <div
-          onClick={() =>
-            setSelectedWord(
-              words.at(getNextWordIndex(words, selectedWord?.index, false)) ??
-                null,
-            )
-          }
-          className="absolute top-0 left-0 h-96 w-1/3"
-        ></div>
-        <div
-          onClick={() => setSelectedWord(null)}
-          className="absolute top-0 left-1/3 h-96 w-1/3"
-        ></div>
-        <div
-          onClick={() =>
-            setSelectedWord(
-              words.at(getNextWordIndex(words, selectedWord?.index, true)) ??
-                null,
-            )
-          }
-          className="absolute top-0 left-2/3 h-96 w-1/3"
-        ></div>
-      </div>
+      <TouchAreaOverlay
+        left={() =>
+          setSelectedWord(
+            words.at(getNextWordIndex(words, selectedWord?.index, false)) ??
+              null,
+          )
+        }
+        middle={() => setSelectedWord(null)}
+        right={() =>
+          setSelectedWord(
+            words.at(getNextWordIndex(words, selectedWord?.index, true)) ??
+              null,
+          )
+        }
+        className={cn("lg:hidden", selectedWord ? "" : "hidden")}
+      />
       {words.map((w) => (
         <WordGroup
           isSelected={

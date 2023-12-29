@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn, getMorphemeColor } from "@/lib/utils";
 import { PopCard, PopCardContent, PopCardTrigger } from "./pop-card";
 
 interface Props extends Word {
@@ -21,16 +21,23 @@ export default function WordGroup(props: Props) {
         <PopCardTrigger>
           <span className="text-lg">{props.word}</span>
         </PopCardTrigger>
-        <PopCardContent>
+        <PopCardContent className="w-screen lg:w-40">
           {props.entries.map((e) => (
             <div key={e.name + e.type}>
-              <p className="font-bold">
+              <p
+                className={cn(
+                  "font-bold text-sky-600 text-xl",
+                  getMorphemeColor(e.type),
+                )}
+              >
                 {e.name}{" "}
-                <span className="font-thin">
+                <span className="font-light">
                   {props.root ? `[${props.root}]` : ""}
                 </span>
               </p>
-              <p className="text-foreground">{e.type}</p>
+              <p className="font-bold text-muted-foreground">
+                {e.type.toUpperCase()}
+              </p>
               <p>{e.value}</p>
             </div>
           ))}

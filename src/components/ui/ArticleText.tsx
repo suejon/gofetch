@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import WordGroup from "./WordGroup";
+import { cn } from "@/lib/utils";
+import TouchAreaOverlay from "./TouchAreaOverlay";
 
 interface Props {
   words: Word[];
@@ -9,9 +11,10 @@ interface Props {
 
 const getNextWordIndex = (
   words: Word[],
-  index: number,
+  index?: number,
   forward: boolean = true,
 ): number => {
+  if (index === undefined) return 0;
   if (
     ["josa", "punctuation", "space"].includes(
       words.at(index + (forward ? 1 : -1))?.entries?.[0]?.type ?? "",
@@ -65,16 +68,36 @@ export default function ArticleText({ words }: Props) {
     [selectedWord],
   );
 
-  return words.map((w) => (
-    <WordGroup
-      isSelected={
-        selectedWord?.word === w.word && selectedWord?.offset === w.offset
-      }
-      onClick={() => {
-        onWordClick(w);
-      }}
-      key={w.word + w.offset}
-      {...w}
-    />
-  ));
+  return (
+    <div>
+      <TouchAreaOverlay
+        left={() =>
+          setSelectedWord(
+            words.at(getNextWordIndex(words, selectedWord?.index, false)) ??
+              null,
+          )
+        }
+        middle={() => setSelectedWord(null)}
+        right={() =>
+          setSelectedWord(
+            words.at(getNextWordIndex(words, selectedWord?.index, true)) ??
+              null,
+          )
+        }
+        className={cn("lg:hidden", selectedWord ? "" : "hidden")}
+      />
+      {words.map((w) => (
+        <WordGroup
+          isSelected={
+            selectedWord?.word === w.word && selectedWord?.offset === w.offset
+          }
+          onClick={() => {
+            onWordClick(w);
+          }}
+          key={w.word + w.offset}
+          {...w}
+        />
+      ))}
+    </div>
+  );
 }

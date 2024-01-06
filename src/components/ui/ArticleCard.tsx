@@ -16,7 +16,6 @@ interface Props {
 export default function ArticleCard({
   articleId,
   title,
-  image,
   thumbnail,
   lf,
   lf_level,

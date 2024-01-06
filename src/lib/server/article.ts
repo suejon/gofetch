@@ -14,6 +14,7 @@ export const getArticles = async () => {
     columns: {
       articleId: true,
       title: true,
+      image: true,
       thumbnail: true,
       lf_level: true,
       lf: true,

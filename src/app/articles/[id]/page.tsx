@@ -1,12 +1,11 @@
 import LanguageProficiencyButtonGroup from "@/components/ui/LanguageProficiencyButtonGroup";
-import SentenceGroup from "@/components/ui/SentenceGroup";
 import { Badge } from "@/components/ui/badge";
 import { getArticle } from "@/lib/server/article";
 import { formatDistance } from "date-fns";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import splash from "../../../../public/bedbug.jpg"; // TODO: replace with dynamic Image
-import WordGroup from "@/components/ui/WordGroup";
+// import splash from "../../../../public/bedbug.jpg"; // TODO: replace with dynamic Image
+import placeholder from "../../../../public/placeholder.webp";
 import ArticleText from "@/components/ui/ArticleText";
 
 interface Props {
@@ -44,7 +43,7 @@ export default async function Article({ params, searchParams }: Props) {
       </div>
       {/* <Image src={article.image} alt="something" width={600} height={400} blurDataURL="/placeholder.webp" /> */}
       <Image
-        src={splash}
+        src={placeholder}
         alt="something"
         width={600}
         height={400}

@@ -28,6 +28,7 @@ export const article = mySqlTable(
     lang: varchar("lang", { length: 2 }).notNull(),
     lf: varchar("lang_framework", { length: 256 }).notNull(),
     lf_level: varchar("lf_level", { length: 256 }).notNull(),
+    processed: boolean("processed").default(false).notNull(),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),

@@ -1,16 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   devIndicators: {
-    buildActivityPosition: "bottom-left"
+    buildActivityPosition: "bottom-left",
   },
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: '**example.com', //TODO: update later
+        protocol: "https",
+        hostname: "storage.googleapis.com",
       },
     ],
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

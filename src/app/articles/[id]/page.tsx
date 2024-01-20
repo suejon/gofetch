@@ -4,8 +4,6 @@ import { getArticle } from "@/lib/server/article";
 import { formatDistance } from "date-fns";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-// import splash from "../../../../public/bedbug.jpg"; // TODO: replace with dynamic Image
-import placeholder from "../../../../public/placeholder.webp";
 import ArticleText from "@/components/ui/ArticleText";
 
 interface Props {
@@ -13,10 +11,7 @@ interface Props {
   searchParams: { level: string };
 }
 export default async function Article({ params, searchParams }: Props) {
-  const [article, sentences, words] = await getArticle(
-    params.id,
-    searchParams.level,
-  );
+  const [article, _, words] = await getArticle(params.id, searchParams.level);
 
   if (!article) {
     notFound();
@@ -41,9 +36,8 @@ export default async function Article({ params, searchParams }: Props) {
           articleId={article.articleId}
         />
       </div>
-      {/* <Image src={article.image} alt="something" width={600} height={400} blurDataURL="/placeholder.webp" /> */}
       <Image
-        src={placeholder}
+        src={process.env.NEXT_PUBLIC_STORAGE_URL + "/" + article.image}
         alt="something"
         width={600}
         height={400}

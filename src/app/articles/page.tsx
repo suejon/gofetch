@@ -8,7 +8,7 @@ export default async function Articles() {
       <p>
         Hello, welcome to the articles page. Click on an article to get going
       </p>
-      <div className="flex space-x-2">
+      <div className="flex flex-wrap gap-2">
         {articles.map((article) => (
           <ArticleCard {...article} key={article.articleId} />
         ))}

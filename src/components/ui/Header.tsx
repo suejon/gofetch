@@ -2,13 +2,14 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { SheetTrigger, SheetContent, Sheet } from "@/components/ui/sheet";
 import { siteConfig } from "@/config/site";
-import { Scroll } from "lucide-react";
+import dog from "../../../public/gofetch-dog.svg";
+import Image from "next/image";
 
 export default function Header() {
   return (
     <header className="flex items-center justify-between px-6 py-4 md:px-8 lg:px-12">
       <Link href="/">
-        <Scroll />
+        <Image src={dog} alt="gofetch" className="h-10 w-10" />
         <span className="sr-only">gofetch</span>
       </Link>
       <Sheet>

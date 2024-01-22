@@ -1,6 +1,11 @@
 import { initTRPC } from "@trpc/server";
+import { CreateNextContextOptions } from "@trpc/server/adapters/next";
 
-const t = initTRPC.create();
+import { db } from "@db/index";
+export const createContext = async (opts: CreateNextContextOptions) => {
+  return { db };
+};
+const t = initTRPC.context<typeof createContext>().create();
 
 // base router and procedure helpers
 export const router = t.router;

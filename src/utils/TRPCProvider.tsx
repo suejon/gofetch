@@ -1,3 +1,9 @@
+/**
+ * TRPC Provider for use with NextJS 13> 's App Router
+ * thanks to jherr:
+ * https://github.com/jherr/trpc-on-the-app-router
+ *
+ */
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";

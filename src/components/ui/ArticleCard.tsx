@@ -1,8 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "./button";
-// import img from "../../../public/bedbug.jpg";
-// import placeholder from "../../../public/placeholder.webp";
 
 interface Props {
   articleId: number;
@@ -21,30 +18,27 @@ export default function ArticleCard({
 }: Props) {
   const imageUrl = process.env.STORAGE_URL + "/" + image;
   return (
-    <div className="border-black border-2 rounded-md flex-col gap-2 p-4">
-      <div className="flex justify-center h-72">
-        <Image
-          src={imageUrl}
-          width={600}
-          height={400}
-          style={{ objectFit: "cover" }}
-          alt="thumbnail"
-          blurDataURL="/placeholder.webp"
-        />
-        {/* <Image */}
-        {/*   src={placeholder} */}
-        {/*   style={{ objectFit: "cover" }} */}
-        {/*   alt="thumbnail" */}
-        {/*   blurDataURL="/placeholder.webp" */}
-        {/* /> */}
-      </div>
-      <p className="text-xl">{title}</p>
+    <>
       <Link
         className="float-right"
         href={`/articles/${articleId}?level=${lf_level}`}
       >
-        <Button variant="outline">View Article</Button>
+        <div className="flex-col space-y-2 rounded-md pb-2 shadow-lg">
+          <div className="flex h-72 justify-center">
+            <Image
+              src={imageUrl}
+              width={600}
+              height={400}
+              style={{ objectFit: "cover" }}
+              alt="thumbnail"
+              blurDataURL="/placeholder.webp"
+            />
+          </div>
+          <div className="space-y-2 p-2">
+            <p className="text-xl">{title}</p>
+          </div>
+        </div>
       </Link>
-    </div>
+    </>
   );
 }

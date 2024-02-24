@@ -18,3 +18,20 @@ export function getMorphemeColor(type: string) {
       return "text-gray-500";
   }
 }
+
+export const scrollToIfNotVisible = (id: any) => {
+  setTimeout(() => {
+    let element = document.getElementById(id);
+    if (element && !isVisible(element)) {
+      window.scroll({
+        top: element.offsetTop - 60,
+        behavior: "smooth",
+      });
+    }
+  }, 5);
+};
+
+function isVisible(element: HTMLElement) {
+  var rect = element.getBoundingClientRect();
+  return rect.top >= 0 && rect.bottom <= window.innerHeight;
+}

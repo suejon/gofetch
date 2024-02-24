@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import WordGroup from "./WordGroup";
-import { cn } from "@/lib/utils";
+import { cn, scrollToIfNotVisible } from "@/lib/utils";
 import TouchAreaOverlay from "./TouchAreaOverlay";
 
 interface Props {
@@ -29,7 +29,7 @@ export default function ArticleText({ words }: Props) {
   const [selectedWord, setSelectedWord] = useState<Word | null>(null);
   const onWordClick = (w: Word) => {
     setSelectedWord(w);
-    console.log("the selected word is", w.word, "at offset", w.offset);
+    console.debug("the selected word is", w.word, "at offset", w.offset);
   };
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
@@ -69,21 +69,23 @@ export default function ArticleText({ words }: Props) {
   );
 
   return (
-    <div>
+    <>
       <TouchAreaOverlay
-        left={() =>
-          setSelectedWord(
+        left={() => {
+          const w =
             words.at(getNextWordIndex(words, selectedWord?.index, false)) ??
-              null,
-          )
-        }
+            null;
+          setSelectedWord(w);
+          if (w) scrollToIfNotVisible(w.word + w.index);
+        }}
         middle={() => setSelectedWord(null)}
-        right={() =>
-          setSelectedWord(
+        right={() => {
+          const w =
             words.at(getNextWordIndex(words, selectedWord?.index, true)) ??
-              null,
-          )
-        }
+            null;
+          setSelectedWord(w);
+          if (w) scrollToIfNotVisible(w.word + w.index);
+        }}
         className={cn("lg:hidden", selectedWord ? "" : "hidden")}
       />
       {words.map((w) => (
@@ -98,6 +100,6 @@ export default function ArticleText({ words }: Props) {
           {...w}
         />
       ))}
-    </div>
+    </>
   );
 }

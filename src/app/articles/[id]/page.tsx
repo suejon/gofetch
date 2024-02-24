@@ -1,10 +1,10 @@
+import ArticleText from "@/components/ui/ArticleText";
 import LanguageProficiencyButtonGroup from "@/components/ui/LanguageProficiencyButtonGroup";
 import { Badge } from "@/components/ui/badge";
 import { getArticle } from "@/lib/server/article";
 import { formatDistance } from "date-fns";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import ArticleText from "@/components/ui/ArticleText";
 
 interface Props {
   params: { id: number };
@@ -18,7 +18,7 @@ export default async function Article({ params, searchParams }: Props) {
   }
 
   return (
-    <main className="flex flex-col items-center justify-center flex-grow p-6 space-y-8">
+    <main className="flex flex-grow flex-col items-center justify-center space-y-8 p-6">
       <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
         {article.title}
       </h1>
@@ -43,7 +43,7 @@ export default async function Article({ params, searchParams }: Props) {
         height={400}
         blurDataURL="/placeholder.webp"
       />
-      <article className="prose dark:prose-dark max-w-none space-y-6">
+      <article className="prose dark:prose-dark max-w-none space-y-6 leading-5 md:w-3/4 lg:leading-10">
         <ArticleText words={words} />
       </article>
     </main>

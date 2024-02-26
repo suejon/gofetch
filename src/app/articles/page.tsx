@@ -1,5 +1,4 @@
 import ArticleCard from "@/components/ui/ArticleCard";
-import { getArticles } from "@/lib/server/article";
 import { api } from "@/server/routers/_app";
 
 export default async function Articles() {
@@ -7,7 +6,8 @@ export default async function Articles() {
   return (
     <div className="p-4 space-y-2">
       <p>
-        Hello, welcome to the articles page. Click on an article to get going
+        Hello, welcome to the Gofetch articles. Click on an article to start
+        learning!
       </p>
       <div className="flex flex-wrap gap-2">
         {articles.map((article) => (

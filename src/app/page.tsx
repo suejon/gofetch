@@ -9,7 +9,7 @@ export default async function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center gap-8 p-24">
       {/* <p>{data.gretting}</p> */}
-      <Image src={dog} alt="gofetch" className="h-52" />
+      <Image priority={true} src={dog} alt="gofetch" className="h-52 w-auto" />
       <h1 className="text-8xl font-thin">
         Welcome to <span className="font-bold">GoFetch</span>
       </h1>

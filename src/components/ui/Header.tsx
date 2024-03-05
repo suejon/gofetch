@@ -9,7 +9,7 @@ export default function Header() {
   return (
     <header className="flex items-center justify-between px-6 py-4 md:px-8 lg:px-12">
       <Link href="/">
-        <Image src={dog} alt="gofetch" className="h-10 w-10" />
+        <Image priority src={dog} alt="gofetch" className="h-10 w-10" />
         <span className="sr-only">gofetch</span>
       </Link>
       <Sheet>

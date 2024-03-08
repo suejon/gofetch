@@ -6,15 +6,15 @@ interface Props {
   title: string;
   image: string;
   thumbnail: string;
-  lf: string;
-  lf_level: string;
+  langFramework: string;
+  lfLevel: string;
 }
 
 export default function ArticleCard({
   articleId,
   title,
   image,
-  lf_level,
+  lfLevel: lf_level,
 }: Props) {
   const imageUrl = process.env.STORAGE_URL + "/" + image;
   return (

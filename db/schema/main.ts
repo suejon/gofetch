@@ -41,7 +41,7 @@ export const account = mysqlTable(
 export const article = mysqlTable(
   "article",
   {
-    id: serial("id").notNull(),
+    id: serial("id").notNull().primaryKey(),
     articleId: int("article_id").notNull(),
     title: varchar("title", { length: 256 }).notNull(),
     content: text("content").notNull(),
@@ -63,9 +63,7 @@ export const article = mysqlTable(
   },
   (table) => {
     return {
-      idIdx: index("article_id_idx").on(table.articleId),
-      articleIdPk: primaryKey({ columns: [table.id], name: "article_id_pk" }),
-      id: unique("id").on(table.id),
+      articleIdIdx: index("article_id_idx").on(table.articleId),
     };
   },
 );
@@ -106,24 +104,16 @@ export const articleSentence = mysqlTable(
   },
 );
 
-export const articleVariantRaw = mysqlTable(
-  "article_variant_raw",
-  {
-    article: serial("article").notNull(),
-    title: varchar("title", { length: 256 }).notNull(),
-    content: text("content").notNull(),
-    createdAt: timestamp("created_at", { mode: "string" })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    processedAt: timestamp("processed_at", { mode: "string" }),
-    log: text("log"),
-  },
-  (table) => {
-    return {
-      article: unique("article").on(table.article),
-    };
-  },
-);
+export const articleVariantRaw = mysqlTable("article_variant_raw", {
+  article: serial("article").notNull(),
+  title: varchar("title", { length: 256 }).notNull(),
+  content: text("content").notNull(),
+  createdAt: timestamp("created_at", { mode: "string" })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  processedAt: timestamp("processed_at", { mode: "string" }),
+  log: text("log"),
+});
 
 export const entry = mysqlTable(
   "entry",

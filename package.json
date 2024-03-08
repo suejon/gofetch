@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "pull": "drizzle-kit introspect:mysql",
     "push": "drizzle-kit push:mysql",
     "drop": "drizzle-kit drop:mysql",
     "studio": "drizzle-kit studio"

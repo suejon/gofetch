@@ -15,5 +15,5 @@ export default {
   dbCredentials: {
     uri: process.env.DATABASE_URL,
   },
-  tablesFilter: ["t3turbo_*"],
+  out: "./db",
 } satisfies Config;

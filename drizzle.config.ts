@@ -10,10 +10,11 @@ if (!process.env.DATABASE_URL) {
 }
 
 export default {
-  schema: "./db/schema",
-  driver: "mysql2",
+  schema: "./db/schema/*",
+  driver: "turso",
   dbCredentials: {
-    uri: process.env.DATABASE_URL,
+    url: process.env.DATABASE_URL,
+    authToken: process.env.DATABASE_AUTH_TOKEN,
   },
-  out: "./db",
+  out: "./db/drizzle",
 } satisfies Config;

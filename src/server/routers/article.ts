@@ -13,7 +13,7 @@ export const articleRouter = router({
         lfLevel: true,
         langFramework: true,
       },
-      where: and(eq(article.hidden, 0), eq(article.original, 1)),
+      where: and(eq(article.hidden, false), eq(article.original, true)),
     });
   }),
 });

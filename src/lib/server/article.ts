@@ -9,19 +9,6 @@ import {
   sentenceTranslation,
 } from "@db/schema/main";
 
-export const getArticles = async () => {
-  return await db.query.article.findMany({
-    columns: {
-      articleId: true,
-      title: true,
-      image: true,
-      thumbnail: true,
-      lfLevel: true,
-      langFramework: true,
-    },
-    where: and(eq(article.hidden, 0), eq(article.original, 1)),
-  });
-};
 export const getArticle = async (
   article_id: number,
   lf_level: string,

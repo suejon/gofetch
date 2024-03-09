@@ -1,65 +1,36 @@
-import {
-  mysqlTable,
-  index,
-  primaryKey,
-  varchar,
-  int,
-  text,
-  unique,
-  serial,
-  tinyint,
-  timestamp,
-} from "drizzle-orm/mysql-core";
 import { relations, sql } from "drizzle-orm";
+import {
+  index,
+  integer,
+  primaryKey,
+  sqliteTable,
+  text,
+} from "drizzle-orm/sqlite-core";
 
-export const account = mysqlTable(
-  "account",
-  {
-    userId: varchar("userId", { length: 255 }).notNull(),
-    type: varchar("type", { length: 255 }).notNull(),
-    provider: varchar("provider", { length: 255 }).notNull(),
-    providerAccountId: varchar("providerAccountId", { length: 255 }).notNull(),
-    refreshToken: varchar("refresh_token", { length: 255 }),
-    accessToken: varchar("access_token", { length: 255 }),
-    expiresAt: int("expires_at"),
-    tokenType: varchar("token_type", { length: 255 }),
-    scope: varchar("scope", { length: 255 }),
-    idToken: text("id_token"),
-    sessionState: varchar("session_state", { length: 255 }),
-  },
-  (table) => {
-    return {
-      userIdIdx: index("userId_idx").on(table.userId),
-      accountProviderProviderAccountIdPk: primaryKey({
-        columns: [table.provider, table.providerAccountId],
-        name: "account_provider_providerAccountId_pk",
-      }),
-    };
-  },
-);
-
-export const article = mysqlTable(
+export const article = sqliteTable(
   "article",
   {
-    id: serial("id").notNull().primaryKey(),
-    articleId: int("article_id").notNull(),
-    title: varchar("title", { length: 256 }).notNull(),
+    id: integer("id").notNull().primaryKey(),
+    articleId: integer("article_id").notNull(),
+    title: text("title", { length: 256 }).notNull(),
     content: text("content").notNull(),
-    image: varchar("image", { length: 512 }).notNull(),
-    thumbnail: varchar("thumbnail", { length: 512 }).notNull(),
-    sourceUrl: varchar("source_url", { length: 512 }).notNull(),
-    hidden: tinyint("hidden").default(1).notNull(),
-    original: tinyint("original").default(0).notNull(),
-    lang: varchar("lang", { length: 2 }).notNull(),
-    langFramework: varchar("lang_framework", { length: 256 }).notNull(),
-    lfLevel: varchar("lf_level", { length: 256 }).notNull(),
-    createdAt: timestamp("created_at", { mode: "string" })
+    image: text("image", { length: 512 }).notNull(),
+    thumbnail: text("thumbnail", { length: 512 }).notNull(),
+    sourceUrl: text("source_url", { length: 512 }).notNull(),
+    hidden: integer("hidden", { mode: "boolean" }).default(true).notNull(),
+    original: integer("original", { mode: "boolean" }).default(false).notNull(),
+    lang: text("lang", { length: 2 }).notNull(),
+    langFramework: text("lang_framework", { length: 256 }).notNull(),
+    lfLevel: text("lf_level", { length: 256 }).notNull(),
+    createdAt: integer("created_at", { mode: "timestamp" })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
-    updatedAt: timestamp("updated_at", { mode: "string" }).onUpdateNow(),
-    deletedAt: timestamp("deleted_at", { mode: "string" }),
-    author: varchar("author", { length: 255 }),
-    processed: tinyint("processed").default(0).notNull(),
+    updatedAt: integer("updated_at", { mode: "timestamp" }),
+    deletedAt: integer("deleted_at", { mode: "timestamp" }),
+    author: text("author", { length: 255 }),
+    processed: integer("processed", { mode: "boolean" })
+      .default(false)
+      .notNull(),
   },
   (table) => {
     return {
@@ -68,16 +39,15 @@ export const article = mysqlTable(
   },
 );
 
-export const articleMorpheme = mysqlTable(
+export const articleMorpheme = sqliteTable(
   "article_morpheme",
   {
-    article: int("article").notNull(),
-    morpheme: varchar("morpheme", { length: 255 }).notNull(),
-    offset: int("offset").notNull(),
+    article: integer("article").notNull(),
+    morpheme: text("morpheme", { length: 255 }).notNull(),
+    offset: integer("offset").notNull(),
   },
   (table) => {
     return {
-      articleMorpheme: index("article_morpheme").on(table.article),
       articleMorphemeArticleMorphemeOffsetPk: primaryKey({
         columns: [table.article, table.morpheme, table.offset],
         name: "article_morpheme_article_morpheme_offset_pk",
@@ -86,16 +56,15 @@ export const articleMorpheme = mysqlTable(
   },
 );
 
-export const articleSentence = mysqlTable(
+export const articleSentence = sqliteTable(
   "article_sentence",
   {
-    articleId: int("article_id").notNull(),
+    articleId: integer("article_id").notNull(),
     sourceText: text("source_text").notNull(),
-    position: int("position").notNull(),
+    position: integer("position").notNull(),
   },
   (table) => {
     return {
-      articleIdIdx: index("article_id_idx").on(table.articleId),
       articleSentenceArticleIdPositionPk: primaryKey({
         columns: [table.articleId, table.position],
         name: "article_sentence_article_id_position_pk",
@@ -104,27 +73,26 @@ export const articleSentence = mysqlTable(
   },
 );
 
-export const articleVariantRaw = mysqlTable("article_variant_raw", {
-  article: serial("article").notNull(),
-  title: varchar("title", { length: 256 }).notNull(),
+export const articleVariantRaw = sqliteTable("article_variant_raw", {
+  article: integer("article").notNull(),
+  title: text("title", { length: 256 }).notNull(),
   content: text("content").notNull(),
-  createdAt: timestamp("created_at", { mode: "string" })
+  createdAt: integer("created_at", { mode: "timestamp" })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
-  processedAt: timestamp("processed_at", { mode: "string" }),
+  processedAt: integer("processed_at", { mode: "timestamp" }),
   log: text("log"),
 });
 
-export const entry = mysqlTable(
+export const entry = sqliteTable(
   "entry",
   {
-    morpheme: varchar("morpheme", { length: 255 }).notNull(),
-    type: varchar("type", { length: 25 }).notNull(),
+    morpheme: text("morpheme", { length: 255 }).notNull(),
+    type: text("type", { length: 25 }).notNull(),
     value: text("value"),
   },
   (table) => {
     return {
-      entry: index("entry").on(table.morpheme, table.type),
       entryMorphemeTypePk: primaryKey({
         columns: [table.morpheme, table.type],
         name: "entry_morpheme_type_pk",
@@ -133,12 +101,12 @@ export const entry = mysqlTable(
   },
 );
 
-export const language = mysqlTable(
+export const language = sqliteTable(
   "language",
   {
-    code: varchar("code", { length: 2 }).notNull(),
-    name: varchar("name", { length: 256 }).notNull(),
-    createdAt: timestamp("created_at", { mode: "string" })
+    code: text("code", { length: 2 }).notNull(),
+    name: text("name", { length: 256 }).notNull(),
+    createdAt: integer("created_at", { mode: "timestamp" })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
   },
@@ -152,17 +120,17 @@ export const language = mysqlTable(
   },
 );
 
-export const languageFramework = mysqlTable(
+export const languageFramework = sqliteTable(
   "language_framework",
   {
-    name: varchar("name", { length: 256 }).notNull(),
-    country: varchar("country", { length: 2 }).notNull(),
-    lang: varchar("lang", { length: 2 }).notNull(),
-    createdAt: timestamp("created_at", { mode: "string" })
+    name: text("name", { length: 256 }).notNull(),
+    country: text("country", { length: 2 }).notNull(),
+    lang: text("lang", { length: 2 }).notNull(),
+    createdAt: integer("created_at", { mode: "timestamp" })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
-    updatedAt: timestamp("updated_at", { mode: "string" }).onUpdateNow(),
-    deletedAt: timestamp("deleted_at", { mode: "string" }),
+    updatedAt: integer("updated_at", { mode: "timestamp" }),
+    deletedAt: integer("deleted_at", { mode: "timestamp" }),
   },
   (table) => {
     return {
@@ -174,12 +142,12 @@ export const languageFramework = mysqlTable(
   },
 );
 
-export const lfLevel = mysqlTable(
+export const lfLevel = sqliteTable(
   "lf_level",
   {
-    name: varchar("name", { length: 256 }).notNull(),
-    languageFramework: varchar("language_framework", { length: 256 }).notNull(),
-    order: int("order").notNull(),
+    name: text("name", { length: 256 }).notNull(),
+    languageFramework: text("language_framework", { length: 256 }).notNull(),
+    order: integer("order").notNull(),
   },
   (table) => {
     return {
@@ -191,13 +159,13 @@ export const lfLevel = mysqlTable(
   },
 );
 
-export const morpheme = mysqlTable(
+export const morpheme = sqliteTable(
   "morpheme",
   {
-    name: varchar("name", { length: 255 }).notNull(),
-    root: varchar("root", { length: 30 }),
-    lang: varchar("lang", { length: 2 }).notNull(),
-    createdAt: timestamp("created_at", { mode: "string" })
+    name: text("name", { length: 255 }).notNull(),
+    root: text("root", { length: 30 }),
+    lang: text("lang", { length: 2 }).notNull(),
+    createdAt: integer("created_at", { mode: "timestamp" })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
   },
@@ -212,14 +180,14 @@ export const morpheme = mysqlTable(
   },
 );
 
-export const sentenceTranslation = mysqlTable(
+export const sentenceTranslation = sqliteTable(
   "sentence_translation",
   {
-    source: int("source").notNull(),
+    source: integer("source").notNull(),
     content: text("content").notNull(),
-    srcLang: varchar("src_lang", { length: 2 }).notNull(),
-    trgLang: varchar("trg_lang", { length: 2 }).notNull(),
-    position: int("position").notNull(),
+    srcLang: text("src_lang", { length: 2 }).notNull(),
+    trgLang: text("trg_lang", { length: 2 }).notNull(),
+    position: integer("position").notNull(),
   },
   (table) => {
     return {
@@ -231,12 +199,12 @@ export const sentenceTranslation = mysqlTable(
   },
 );
 
-export const session = mysqlTable(
+export const session = sqliteTable(
   "session",
   {
-    sessionToken: varchar("sessionToken", { length: 255 }).notNull(),
-    userId: varchar("userId", { length: 255 }).notNull(),
-    expires: timestamp("expires", { mode: "string" }).notNull(),
+    sessionToken: text("sessionToken", { length: 255 }).notNull(),
+    userId: text("userId", { length: 255 }).notNull(),
+    expires: integer("expires", { mode: "timestamp" }).notNull(),
   },
   (table) => {
     return {
@@ -249,55 +217,19 @@ export const session = mysqlTable(
   },
 );
 
-export const tag = mysqlTable(
+export const tag = sqliteTable(
   "tag",
   {
-    name: varchar("name", { length: 256 }).notNull(),
-    createdAt: timestamp("created_at", { mode: "string" })
+    name: text("name", { length: 256 }).notNull(),
+    createdAt: integer("created_at", { mode: "timestamp" })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
-    updatedAt: timestamp("updated_at", { mode: "string" }).onUpdateNow(),
-    deletedAt: timestamp("deleted_at", { mode: "string" }),
+    updatedAt: integer("updated_at", { mode: "timestamp" }),
+    deletedAt: integer("deleted_at", { mode: "timestamp" }),
   },
   (table) => {
     return {
       tagNamePk: primaryKey({ columns: [table.name], name: "tag_name_pk" }),
-    };
-  },
-);
-
-export const user = mysqlTable(
-  "user",
-  {
-    id: varchar("id", { length: 255 }).notNull(),
-    name: varchar("name", { length: 255 }),
-    email: varchar("email", { length: 255 }).notNull(),
-    emailVerified: timestamp("emailVerified", {
-      fsp: 3,
-      mode: "string",
-    }).default(sql`CURRENT_TIMESTAMP(3)`),
-    image: varchar("image", { length: 255 }),
-  },
-  (table) => {
-    return {
-      userIdPk: primaryKey({ columns: [table.id], name: "user_id_pk" }),
-    };
-  },
-);
-
-export const verificationToken = mysqlTable(
-  "verificationToken",
-  {
-    identifier: varchar("identifier", { length: 255 }).notNull(),
-    token: varchar("token", { length: 255 }).notNull(),
-    expires: timestamp("expires", { mode: "string" }).notNull(),
-  },
-  (table) => {
-    return {
-      verificationTokenIdentifierTokenPk: primaryKey({
-        columns: [table.identifier, table.token],
-        name: "verificationToken_identifier_token_pk",
-      }),
     };
   },
 );
@@ -324,10 +256,10 @@ export const tagRelation = relations(tag, ({ many }) => ({
   tagToArticles: many(articleTag),
 }));
 
-export const articleTag = mysqlTable("article_tags", {
-  article: int("article").notNull(),
+export const articleTag = sqliteTable("article_tags", {
+  article: integer("article").notNull(),
   // .references(() => article.articleId),
-  tag: varchar("tag", { length: 256 }).notNull(),
+  tag: text("tag", { length: 256 }).notNull(),
   // .references(() => tag.name),
 });
 

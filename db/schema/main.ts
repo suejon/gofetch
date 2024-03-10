@@ -1,97 +1,266 @@
 import { relations, sql } from "drizzle-orm";
 import {
-  serial,
-  timestamp,
-  varchar,
-  text,
-  boolean,
-  int,
-  primaryKey,
   index,
-} from "drizzle-orm/mysql-core";
+  integer,
+  primaryKey,
+  sqliteTable,
+  text,
+} from "drizzle-orm/sqlite-core";
 
-import { mySqlTable } from "./_table";
-
-export const article = mySqlTable(
+export const article = sqliteTable(
   "article",
   {
-    id: serial("id").primaryKey(),
-    articleId: int("article_id").notNull(),
-    title: varchar("title", { length: 256 }).notNull(),
-    author: varchar("author", { length: 256 }),
+    id: integer("id").notNull().primaryKey(),
+    articleId: integer("article_id").notNull(),
+    title: text("title", { length: 256 }).notNull(),
     content: text("content").notNull(),
-    image: varchar("image", { length: 512 }).notNull(),
-    thumbnail: varchar("thumbnail", { length: 512 }).notNull(),
-    sourceUrl: varchar("source_url", { length: 512 }).notNull(),
-    hidden: boolean("hidden").default(true).notNull(), // NOTE: all articles will be hidden until marked available
-    original: boolean("original").default(false).notNull(), // NOTE: an articleId will onnly have one original
-    lang: varchar("lang", { length: 2 }).notNull(),
-    lf: varchar("lang_framework", { length: 256 }).notNull(),
-    lf_level: varchar("lf_level", { length: 256 }).notNull(),
-    processed: boolean("processed").default(false).notNull(),
-    createdAt: timestamp("created_at")
+    image: text("image", { length: 512 }).notNull(),
+    thumbnail: text("thumbnail", { length: 512 }).notNull(),
+    sourceUrl: text("source_url", { length: 512 }).notNull(),
+    hidden: integer("hidden", { mode: "boolean" }).default(true).notNull(),
+    original: integer("original", { mode: "boolean" }).default(false).notNull(),
+    lang: text("lang", { length: 2 }).notNull(),
+    langFramework: text("lang_framework", { length: 256 }).notNull(),
+    lfLevel: text("lf_level", { length: 256 }).notNull(),
+    createdAt: integer("created_at", { mode: "timestamp" })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
-    updatedAt: timestamp("updated_at").onUpdateNow(),
-    deletedAt: timestamp("deleted_at"),
+    updatedAt: integer("updated_at", { mode: "timestamp" }),
+    deletedAt: integer("deleted_at", { mode: "timestamp" }),
+    author: text("author", { length: 255 }),
+    processed: integer("processed", { mode: "boolean" })
+      .default(false)
+      .notNull(),
   },
-  (table) => ({
-    articleId: index("article_id_idx").on(table.articleId),
-  }),
+  (table) => {
+    return {
+      articleIdIdx: index("article_id_idx").on(table.articleId),
+    };
+  },
 );
 
+export const articleMorpheme = sqliteTable(
+  "article_morpheme",
+  {
+    article: integer("article").notNull(),
+    morpheme: text("morpheme", { length: 255 }).notNull(),
+    offset: integer("offset").notNull(),
+  },
+  (table) => {
+    return {
+      articleMorphemeArticleMorphemeOffsetPk: primaryKey({
+        columns: [table.article, table.morpheme, table.offset],
+        name: "article_morpheme_article_morpheme_offset_pk",
+      }),
+    };
+  },
+);
+
+export const articleSentence = sqliteTable(
+  "article_sentence",
+  {
+    articleId: integer("article_id").notNull(),
+    sourceText: text("source_text").notNull(),
+    position: integer("position").notNull(),
+  },
+  (table) => {
+    return {
+      articleSentenceArticleIdPositionPk: primaryKey({
+        columns: [table.articleId, table.position],
+        name: "article_sentence_article_id_position_pk",
+      }),
+    };
+  },
+);
+
+export const articleVariantRaw = sqliteTable("article_variant_raw", {
+  article: integer("article").notNull(),
+  title: text("title", { length: 256 }).notNull(),
+  content: text("content").notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  processedAt: integer("processed_at", { mode: "timestamp" }),
+  log: text("log"),
+});
+
+export const entry = sqliteTable(
+  "entry",
+  {
+    morpheme: text("morpheme", { length: 255 }).notNull(),
+    type: text("type", { length: 25 }).notNull(),
+    value: text("value"),
+  },
+  (table) => {
+    return {
+      entryMorphemeTypePk: primaryKey({
+        columns: [table.morpheme, table.type],
+        name: "entry_morpheme_type_pk",
+      }),
+    };
+  },
+);
+
+export const language = sqliteTable(
+  "language",
+  {
+    code: text("code", { length: 2 }).notNull(),
+    name: text("name", { length: 256 }).notNull(),
+    createdAt: integer("created_at", { mode: "timestamp" })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (table) => {
+    return {
+      languageCodePk: primaryKey({
+        columns: [table.code],
+        name: "language_code_pk",
+      }),
+    };
+  },
+);
+
+export const languageFramework = sqliteTable(
+  "language_framework",
+  {
+    name: text("name", { length: 256 }).notNull(),
+    country: text("country", { length: 2 }).notNull(),
+    lang: text("lang", { length: 2 }).notNull(),
+    createdAt: integer("created_at", { mode: "timestamp" })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: integer("updated_at", { mode: "timestamp" }),
+    deletedAt: integer("deleted_at", { mode: "timestamp" }),
+  },
+  (table) => {
+    return {
+      languageFrameworkNamePk: primaryKey({
+        columns: [table.name],
+        name: "language_framework_name_pk",
+      }),
+    };
+  },
+);
+
+export const lfLevel = sqliteTable(
+  "lf_level",
+  {
+    name: text("name", { length: 256 }).notNull(),
+    languageFramework: text("language_framework", { length: 256 }).notNull(),
+    order: integer("order").notNull(),
+  },
+  (table) => {
+    return {
+      lfLevelNameLanguageFrameworkPk: primaryKey({
+        columns: [table.name, table.languageFramework],
+        name: "lf_level_name_language_framework_pk",
+      }),
+    };
+  },
+);
+
+export const morpheme = sqliteTable(
+  "morpheme",
+  {
+    name: text("name", { length: 255 }).notNull(),
+    root: text("root", { length: 30 }),
+    lang: text("lang", { length: 2 }).notNull(),
+    createdAt: integer("created_at", { mode: "timestamp" })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (table) => {
+    return {
+      nameIdx: index("name_idx").on(table.name),
+      morphemeNamePk: primaryKey({
+        columns: [table.name],
+        name: "morpheme_name_pk",
+      }),
+    };
+  },
+);
+
+export const sentenceTranslation = sqliteTable(
+  "sentence_translation",
+  {
+    source: integer("source").notNull(),
+    content: text("content").notNull(),
+    srcLang: text("src_lang", { length: 2 }).notNull(),
+    trgLang: text("trg_lang", { length: 2 }).notNull(),
+    position: integer("position").notNull(),
+  },
+  (table) => {
+    return {
+      sentenceTranslationSourceTrgLangPositionPk: primaryKey({
+        columns: [table.source, table.trgLang, table.position],
+        name: "sentence_translation_source_trg_lang_position_pk",
+      }),
+    };
+  },
+);
+
+export const session = sqliteTable(
+  "session",
+  {
+    sessionToken: text("sessionToken", { length: 255 }).notNull(),
+    userId: text("userId", { length: 255 }).notNull(),
+    expires: integer("expires", { mode: "timestamp" }).notNull(),
+  },
+  (table) => {
+    return {
+      userIdIdx: index("userId_idx").on(table.userId),
+      sessionSessionTokenPk: primaryKey({
+        columns: [table.sessionToken],
+        name: "session_sessionToken_pk",
+      }),
+    };
+  },
+);
+
+export const tag = sqliteTable(
+  "tag",
+  {
+    name: text("name", { length: 256 }).notNull(),
+    createdAt: integer("created_at", { mode: "timestamp" })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: integer("updated_at", { mode: "timestamp" }),
+    deletedAt: integer("deleted_at", { mode: "timestamp" }),
+  },
+  (table) => {
+    return {
+      tagNamePk: primaryKey({ columns: [table.name], name: "tag_name_pk" }),
+    };
+  },
+);
+
+/**
+ * Relations
+ */
 export const articleRelations = relations(article, ({ many, one }) => ({
   articleToTags: many(articleTag),
   lang: one(language, { fields: [article.lang], references: [language.code] }),
   lf: one(languageFramework, {
-    fields: [article.lf],
+    fields: [article.langFramework],
     references: [languageFramework.name],
   }),
-  lf_level: one(lf_level, {
-    fields: [article.lf_level, article.lf],
-    references: [lf_level.name, lf_level.languageFramework],
+  lf_level: one(lfLevel, {
+    fields: [article.lfLevel, article.langFramework],
+    references: [lfLevel.name, lfLevel.languageFramework],
   }),
   sentences: many(articleSentence),
   words: many(articleMorpheme),
 }));
 
-export const tag = mySqlTable("tag", {
-  name: varchar("name", { length: 256 }).notNull().primaryKey(),
-  createdAt: timestamp("created_at")
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-  updatedAt: timestamp("updated_at").onUpdateNow(),
-  deletedAt: timestamp("deleted_at"),
-});
-
 export const tagRelation = relations(tag, ({ many }) => ({
   tagToArticles: many(articleTag),
 }));
 
-export const articleTag = mySqlTable("article_tags", {
-  article: int("article").notNull(),
+export const articleTag = sqliteTable("article_tags", {
+  article: integer("article").notNull(),
   // .references(() => article.articleId),
-  tag: varchar("tag", { length: 256 }).notNull(),
+  tag: text("tag", { length: 256 }).notNull(),
   // .references(() => tag.name),
-});
-
-export const language = mySqlTable("language", {
-  code: varchar("code", { length: 2 }).notNull().primaryKey(),
-  name: varchar("name", { length: 256 }).notNull(),
-  createdAt: timestamp("created_at")
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-});
-
-export const languageFramework = mySqlTable("language_framework", {
-  name: varchar("name", { length: 256 }).notNull().primaryKey(),
-  country: varchar("country", { length: 2 }).notNull(), // some lfs don't belong to a single contry - e.g. english
-  lang: varchar("lang", { length: 2 }).notNull(),
-  createdAt: timestamp("created_at")
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-  updatedAt: timestamp("updated_at").onUpdateNow(),
-  deletedAt: timestamp("deleted_at"),
 });
 
 export const lfLang = relations(languageFramework, ({ one }) => ({
@@ -101,53 +270,12 @@ export const lfLang = relations(languageFramework, ({ one }) => ({
   }),
 }));
 
-export const lf_level = mySqlTable(
-  "lf_level",
-  {
-    name: varchar("name", { length: 256 }).notNull(),
-    languageFramework: varchar("language_framework", { length: 256 }).notNull(),
-    // .references(() => languageFramework.name),
-    order: int("order").notNull(),
-  },
-  (lf_level) => ({
-    compoundKey: primaryKey({
-      columns: [lf_level.name, lf_level.languageFramework],
-    }),
-  }),
-);
-
-export const articleVariantRaw = mySqlTable("article_variant_raw", {
-  article: serial("article"),
-  title: varchar("title", { length: 256 }).notNull(),
-  content: text("content").notNull(),
-  createdAt: timestamp("created_at")
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-  processedAt: timestamp("processed_at"),
-  log: text("log"),
-});
-
 export const avrArtcle = relations(articleVariantRaw, ({ one }) => ({
   article: one(article, {
     fields: [articleVariantRaw.article],
     references: [article.id],
   }),
 }));
-
-export const articleSentence = mySqlTable(
-  "article_sentence",
-  {
-    articleId: int("article_id").notNull(),
-    source_text: text("source_text").notNull(),
-    position: int("position").notNull(),
-  },
-  (table) => ({
-    articleId: index("article_id_idx").on(table.articleId),
-    compoundKey: primaryKey({
-      columns: [table.articleId, table.position],
-    }),
-  }),
-);
 
 export const articleSentenceRelations = relations(
   articleSentence,
@@ -162,22 +290,6 @@ export const articleSentenceRelations = relations(
   },
 );
 
-export const sentenceTranslation = mySqlTable(
-  "sentence_translation",
-  {
-    source: int("source"),
-    content: text("content").notNull(),
-    srcLang: varchar("src_lang", { length: 2 }).notNull(),
-    trgLang: varchar("trg_lang", { length: 2 }).notNull(),
-    position: int("position").notNull(),
-  },
-  (table) => ({
-    compoundKey: primaryKey({
-      columns: [table.source, table.trgLang, table.position],
-    }),
-  }),
-);
-
 export const sentenceTranslationRelations = relations(
   sentenceTranslation,
   ({ one }) => {
@@ -189,22 +301,6 @@ export const sentenceTranslationRelations = relations(
   },
 );
 
-export const morpheme = mySqlTable(
-  "morpheme",
-  {
-    name: varchar("name", { length: 255 }).notNull().primaryKey(),
-    root: varchar("root", { length: 30 }),
-    size: int("size").notNull(),
-    lang: varchar("lang", { length: 2 }).notNull(),
-    createdAt: timestamp("created_at")
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-  },
-  (table) => ({
-    morphemeId: index("name_idx").on(table.name),
-  }),
-);
-
 export const morphemeRelations = relations(morpheme, ({ many, one }) => {
   return {
     entries: many(entry),
@@ -212,36 +308,6 @@ export const morphemeRelations = relations(morpheme, ({ many, one }) => {
   };
 });
 
-export const entry = mySqlTable(
-  "entry",
-  {
-    morpheme: varchar("morpheme", { length: 255 }).notNull(),
-    type: varchar("type", { length: 25 }).notNull(),
-    value: text("value"),
-  },
-  (table) => ({
-    entry: index("entry").on(table.morpheme, table.type),
-    compoundKey: primaryKey({
-      columns: [table.morpheme, table.type],
-    }),
-  }),
-);
-
 export const entryRelations = relations(entry, ({ one }) => ({
   morpheme: one(morpheme),
 }));
-
-export const articleMorpheme = mySqlTable(
-  "article_morpheme",
-  {
-    article: int("article").notNull(),
-    morpeheme: varchar("morpheme", { length: 255 }).notNull(),
-    offset: int("offset").notNull(),
-  },
-  (table) => ({
-    article_morpheme: index("article_morpheme").on(table.article),
-    compoundKey: primaryKey({
-      columns: [table.article, table.morpeheme, table.offset],
-    }),
-  }),
-);

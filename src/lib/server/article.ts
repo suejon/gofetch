@@ -4,24 +4,11 @@ import {
   articleMorpheme,
   articleSentence,
   entry,
-  lf_level,
+  lfLevel,
   morpheme,
   sentenceTranslation,
 } from "@db/schema/main";
 
-export const getArticles = async () => {
-  return await db.query.article.findMany({
-    columns: {
-      articleId: true,
-      title: true,
-      image: true,
-      thumbnail: true,
-      lf_level: true,
-      lf: true,
-    },
-    where: and(eq(article.hidden, false), eq(article.original, true)),
-  });
-};
 export const getArticle = async (
   article_id: number,
   lf_level: string,
@@ -35,7 +22,7 @@ export const getArticle = async (
   const articleData = await db.query.article.findFirst({
     where: and(
       eq(article.articleId, article_id),
-      eq(article.lf_level, lf_level),
+      eq(article.lfLevel, lf_level),
     ),
   });
 
@@ -43,7 +30,7 @@ export const getArticle = async (
 
   const sentences = await db
     .select({
-      source_text: articleSentence.source_text,
+      source_text: articleSentence.sourceText,
       target_text: sentenceTranslation.content,
       position: articleSentence.position,
     })
@@ -59,7 +46,7 @@ export const getArticle = async (
     .orderBy(asc(articleSentence.position));
   const articleWords = await db
     .select({
-      word: articleMorpheme.morpeheme,
+      word: articleMorpheme.morpheme,
       offset: articleMorpheme.offset,
       root: morpheme.root,
       lang: morpheme.lang,
@@ -68,9 +55,9 @@ export const getArticle = async (
       >`cast(concat('[', group_concat(distinct json_object('name', ${entry.morpheme}, 'type', ${entry.type}, 'value', ${entry.value})), ']') as json)`,
     })
     .from(articleMorpheme)
-    .leftJoin(morpheme, eq(articleMorpheme.morpeheme, morpheme.name))
+    .leftJoin(morpheme, eq(articleMorpheme.morpheme, morpheme.name))
     .leftJoin(entry, eq(morpheme.name, entry.morpheme))
-    .groupBy(articleMorpheme.morpeheme, articleMorpheme.offset)
+    .groupBy(articleMorpheme.morpheme, articleMorpheme.offset)
     .where(eq(articleMorpheme.article, articleData.id))
     .orderBy(articleMorpheme.offset);
 
@@ -80,13 +67,13 @@ export const getArticle = async (
 };
 
 export const getLanguageProficiencyLevels = async (lf: string) =>
-  await db.query.lf_level.findMany({
-    where: eq(lf_level.languageFramework, lf),
+  await db.query.lfLevel.findMany({
+    where: eq(lfLevel.languageFramework, lf),
   });
 
 export const getArticleDifficultyList = async (articleId: number) => {
   const result = await db
-    .select({ lf_level: article.lf_level })
+    .select({ lf_level: article.lfLevel })
     .from(article)
     .where(eq(article.articleId, articleId));
   return result.map((r) => r.lf_level);

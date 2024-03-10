@@ -1,6 +1,6 @@
-import { getArticleDifficultyList } from "@/lib/server/article";
 import Link from "next/link";
 import { Button } from "./button";
+import { api } from "@/server/routers/_app";
 
 interface Props {
   lf: string;
@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default async function LanguageProficiencyButtonGroup(props: Props) {
-  const languageProficiencyLevels = await getArticleDifficultyList(
+  const languageProficiencyLevels = await api.article.getArticleDifficultyList(
     props.articleId,
   );
   return (

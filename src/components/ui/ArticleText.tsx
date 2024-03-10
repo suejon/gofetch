@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 import WordGroup from "./WordGroup";
 import { cn, scrollToIfNotVisible } from "@/lib/utils";
 import TouchAreaOverlay from "./TouchAreaOverlay";
+import { api } from "@/server/routers/_app";
 
 interface Props {
-  words: Word[];
+  articleId: number;
 }
 
 const getNextWordIndex = (
@@ -25,7 +26,8 @@ const getNextWordIndex = (
   return index + (forward ? 1 : -1);
 };
 
-export default function ArticleText({ words }: Props) {
+export default async function ArticleText({ articleId }: Props) {
+  const words = await api.article.getArticleWords({ articleId });
   const [selectedWord, setSelectedWord] = useState<Word | null>(null);
   const onWordClick = (w: Word) => {
     setSelectedWord(w);

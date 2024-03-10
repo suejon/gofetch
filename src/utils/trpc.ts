@@ -16,7 +16,7 @@ function getBaseUrl() {
 }
 export const trpcReact = createTRPCReact<AppRouter>({});
 
-export const trpc = createTRPCNext<AppRouter>({
+export const clientApi = createTRPCNext<AppRouter>({
   config(opts) {
     const { ctx } = opts;
     // client requests
@@ -46,5 +46,4 @@ export const trpc = createTRPCNext<AppRouter>({
       ],
     };
   },
-  ssr: true,
 });

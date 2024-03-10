@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import WordGroup from "./WordGroup";
 import { cn, scrollToIfNotVisible } from "@/lib/utils";
 import TouchAreaOverlay from "./TouchAreaOverlay";
-import { api } from "@/server/routers/_app";
+import { useGetArticleWords } from "@/lib/hooks/useGetArticleWords";
 
 interface Props {
   articleId: number;
@@ -26,8 +26,8 @@ const getNextWordIndex = (
   return index + (forward ? 1 : -1);
 };
 
-export default async function ArticleText({ articleId }: Props) {
-  const words = await api.article.getArticleWords({ articleId });
+export default function ArticleText({ articleId }: Props) {
+  const [isLoading, words] = useGetArticleWords(articleId);
   const [selectedWord, setSelectedWord] = useState<Word | null>(null);
   const onWordClick = (w: Word) => {
     setSelectedWord(w);

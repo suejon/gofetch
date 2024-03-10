@@ -13,9 +13,7 @@ export const users = sqliteTable("user", {
   id: text("id", { length: 255 }).notNull().primaryKey(),
   name: text("name", { length: 255 }),
   email: text("email", { length: 255 }).notNull(),
-  emailVerified: integer("emailVerified", { mode: "timestamp" }).default(
-    sql`CURRENT_TIMESTAMP`,
-  ),
+  emailVerified: text("emailVerified").default(sql`CURRENT_TIMESTAMP`),
   //   emailVerified: getDate("emailVerified")
   //   mode: "date",
   //   fsp: 3,
@@ -58,7 +56,7 @@ export const sessions = sqliteTable(
   {
     sessionToken: text("sessionToken", { length: 255 }).notNull().primaryKey(),
     userId: text("userId", { length: 255 }).notNull(),
-    expires: integer("expires", { mode: "timestamp" }).notNull(),
+    expires: text("expires").notNull(),
   },
   (session) => ({
     userIdIdx: index("sessionUserId_idx").on(session.userId),
@@ -74,7 +72,7 @@ export const verificationTokens = sqliteTable(
   {
     identifier: text("identifier", { length: 255 }).notNull(),
     token: text("token", { length: 255 }).notNull(),
-    expires: integer("expires", { mode: "timestamp" }).notNull(),
+    expires: text("expires").notNull(),
   },
   (vt) => ({
     compoundKey: primaryKey(vt.identifier, vt.token),

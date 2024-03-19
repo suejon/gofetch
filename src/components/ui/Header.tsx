@@ -59,7 +59,7 @@ export default function Header() {
             {item.name}
           </Link>
         ))}
-        <Button className="ml-4">Login</Button>
+        {/* <Button className="ml-4">Login</Button> */}
       </div>
     </header>
   );

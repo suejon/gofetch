@@ -22,11 +22,11 @@ export const article = sqliteTable(
     lang: text("lang", { length: 2 }).notNull(),
     langFramework: text("lang_framework", { length: 256 }).notNull(),
     lfLevel: text("lf_level", { length: 256 }).notNull(),
-    createdAt: integer("created_at", { mode: "timestamp" })
+    createdAt: text("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
-    updatedAt: integer("updated_at", { mode: "timestamp" }),
-    deletedAt: integer("deleted_at", { mode: "timestamp" }),
+    updatedAt: text("updated_at"),
+    deletedAt: text("deleted_at"),
     author: text("author", { length: 255 }),
     processed: integer("processed", { mode: "boolean" })
       .default(false)
@@ -77,10 +77,10 @@ export const articleVariantRaw = sqliteTable("article_variant_raw", {
   article: integer("article").notNull(),
   title: text("title", { length: 256 }).notNull(),
   content: text("content").notNull(),
-  createdAt: integer("created_at", { mode: "timestamp" })
+  createdAt: text("created_at")
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
-  processedAt: integer("processed_at", { mode: "timestamp" }),
+  processedAt: text("processed_at"),
   log: text("log"),
 });
 
@@ -106,7 +106,7 @@ export const language = sqliteTable(
   {
     code: text("code", { length: 2 }).notNull(),
     name: text("name", { length: 256 }).notNull(),
-    createdAt: integer("created_at", { mode: "timestamp" })
+    createdAt: text("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
   },
@@ -126,11 +126,11 @@ export const languageFramework = sqliteTable(
     name: text("name", { length: 256 }).notNull(),
     country: text("country", { length: 2 }).notNull(),
     lang: text("lang", { length: 2 }).notNull(),
-    createdAt: integer("created_at", { mode: "timestamp" })
+    createdAt: text("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
-    updatedAt: integer("updated_at", { mode: "timestamp" }),
-    deletedAt: integer("deleted_at", { mode: "timestamp" }),
+    updatedAt: text("updated_at"),
+    deletedAt: text("deleted_at"),
   },
   (table) => {
     return {
@@ -165,7 +165,7 @@ export const morpheme = sqliteTable(
     name: text("name", { length: 255 }).notNull(),
     root: text("root", { length: 30 }),
     lang: text("lang", { length: 2 }).notNull(),
-    createdAt: integer("created_at", { mode: "timestamp" })
+    createdAt: text("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
   },
@@ -204,7 +204,7 @@ export const session = sqliteTable(
   {
     sessionToken: text("sessionToken", { length: 255 }).notNull(),
     userId: text("userId", { length: 255 }).notNull(),
-    expires: integer("expires", { mode: "timestamp" }).notNull(),
+    expires: text("expires").notNull(),
   },
   (table) => {
     return {
@@ -221,11 +221,11 @@ export const tag = sqliteTable(
   "tag",
   {
     name: text("name", { length: 256 }).notNull(),
-    createdAt: integer("created_at", { mode: "timestamp" })
+    createdAt: text("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
-    updatedAt: integer("updated_at", { mode: "timestamp" }),
-    deletedAt: integer("deleted_at", { mode: "timestamp" }),
+    updatedAt: text("updated_at"),
+    deletedAt: text("deleted_at"),
   },
   (table) => {
     return {

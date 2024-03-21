@@ -73,7 +73,7 @@ export const articleRouter = router({
           index: i,
           entries: JSON.parse(entries),
           ...rest,
-        };
+        } as Word;
       });
       return mapped;
     }),

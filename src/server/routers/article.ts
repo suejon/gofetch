@@ -48,27 +48,33 @@ export const articleRouter = router({
       return articleData;
     }),
   getArticleWords: procedure
-    .input(z.object({ articleId: z.number() }))
+    .input(z.object({ id: z.number() }))
     .query(async ({ ctx, input }) => {
+      console.log("getting article words for id", input.id);
       const articleWords = await ctx.db
         .select({
           word: articleMorpheme.morpheme,
           offset: articleMorpheme.offset,
           root: morpheme.root,
           lang: morpheme.lang,
-          entries: sql<
-            { name: string; type: string; value: string }[]
-          >`cast(concat('[', group_concat(distinct json_object('name', ${entry.morpheme}, 'type', ${entry.type}, 'value', ${entry.value})), ']') as json)`,
+          entries: sql<string>`concat('[', group_concat(distinct json_object('name', ${entry.morpheme}, 'type', ${entry.type}, 'value', ${entry.value})), ']')`,
         })
         .from(articleMorpheme)
         .leftJoin(morpheme, eq(articleMorpheme.morpheme, morpheme.name))
         .leftJoin(entry, eq(morpheme.name, entry.morpheme))
         .groupBy(articleMorpheme.morpheme, articleMorpheme.offset)
-        .where(eq(articleMorpheme.article, input.articleId))
+        .where(eq(articleMorpheme.article, input.id))
         .orderBy(articleMorpheme.offset);
 
       // TODO: do this at the sql level somehow
-      const mapped = articleWords.map((w, i) => ({ index: i, ...w }));
+      const mapped = articleWords.map((w, i) => {
+        const { entries, ...rest } = w;
+        return {
+          index: i,
+          entries: JSON.parse(entries),
+          ...rest,
+        };
+      });
       return mapped;
     }),
 });

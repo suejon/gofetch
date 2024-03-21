@@ -1,5 +1,5 @@
 import { AppRouter } from "@/server/routers/_app";
-import { httpBatchLink } from "@trpc/client";
+import { httpBatchLink, loggerLink } from "@trpc/client";
 import { createTRPCNext } from "@trpc/next";
 import { createTRPCReact } from "@trpc/react-query";
 function getBaseUrl() {
@@ -46,4 +46,5 @@ export const clientApi = createTRPCNext<AppRouter>({
       ],
     };
   },
+  ssr: false,
 });

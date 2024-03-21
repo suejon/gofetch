@@ -1,12 +1,13 @@
-import { clientApi } from "@/utils/trpc";
+import { trpcReact, clientApi } from "@/utils/trpc";
 import { useEffect } from "react";
 
 export const useGetArticleWords = (
   id: number,
 ): [isLoading: boolean, data: Word[]] => {
   const get = clientApi.article.getArticleWords.useQuery({
-    articleId: id,
+    id: id,
   });
+
   useEffect(() => {
     if (get.isLoadingError) {
       console.error("issue getting words for article", id);

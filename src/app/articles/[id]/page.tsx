@@ -47,7 +47,7 @@ export default async function Article({ params, searchParams }: Props) {
         blurDataURL="/placeholder.webp"
       />
       <article className="prose dark:prose-dark max-w-none space-y-6 leading-5 md:w-3/4 lg:leading-10">
-        <ArticleText articleId={article.id} />
+        <ArticleText id={article.id} />
       </article>
     </main>
   );

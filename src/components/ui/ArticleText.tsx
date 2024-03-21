@@ -7,7 +7,7 @@ import TouchAreaOverlay from "./TouchAreaOverlay";
 import { useGetArticleWords } from "@/lib/hooks/useGetArticleWords";
 
 interface Props {
-  articleId: number;
+  id: number;
 }
 
 const getNextWordIndex = (
@@ -26,8 +26,9 @@ const getNextWordIndex = (
   return index + (forward ? 1 : -1);
 };
 
-export default function ArticleText({ articleId }: Props) {
-  const [isLoading, words] = useGetArticleWords(articleId);
+export default function ArticleText({ id }: Props) {
+  const [isLoading, words] = useGetArticleWords(id);
+
   const [selectedWord, setSelectedWord] = useState<Word | null>(null);
   const onWordClick = (w: Word) => {
     setSelectedWord(w);

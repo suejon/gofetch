@@ -5,6 +5,7 @@ import Header from "@/components/ui/Header";
 import TRPCProvider from "@/utils/TRPCProvider";
 import { Analytics } from "@vercel/analytics/react";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -27,6 +28,7 @@ export default function RootLayout({
         <TRPCProvider>
           <Header />
           {children}
+          <SpeedInsights />
         </TRPCProvider>
       </body>
     </html>

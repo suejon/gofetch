@@ -15,7 +15,7 @@ const GoogleAnalytics = ({ ga_id }: { ga_id: string }) => (
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
 
-          gtag('config', '${ga_id}');
+          gtag('config', '${ga_id}', { cookie_flags: 'SameSite=None;Secure'});
         `,
       }}
     ></Script>

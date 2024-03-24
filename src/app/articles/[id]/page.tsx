@@ -1,10 +1,11 @@
-import ArticleText from "@/components/ui/ArticleText";
+import ArticleText, { ArticleTextLoading } from "@/components/ui/ArticleText";
 import LanguageProficiencyButtonGroup from "@/components/ui/LanguageProficiencyButtonGroup";
 import { Badge } from "@/components/ui/badge";
 import { api } from "@/server/routers/_app";
 import { formatDistance } from "date-fns";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 interface Props {
   params: { id: string };
@@ -47,7 +48,9 @@ export default async function Article({ params, searchParams }: Props) {
         blurDataURL="/placeholder.webp"
       />
       <article className="prose dark:prose-dark max-w-none space-y-6 leading-5 md:w-3/4 lg:leading-10">
-        <ArticleText id={article.id} />
+        <Suspense fallback={<ArticleTextLoading />}>
+          <ArticleText id={article.id} />
+        </Suspense>
       </article>
     </main>
   );

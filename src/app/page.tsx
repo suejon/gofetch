@@ -13,7 +13,7 @@ export default async function Home() {
       <h1 className="text-8xl font-thin">
         Welcome to <span className="font-bold">GoFetch</span>
       </h1>
-      <p>Learn a language through the content you love &#x2764;</p>
+      <p>Making content accessible for everyone &#x2764;</p>
     </main>
   );
 }

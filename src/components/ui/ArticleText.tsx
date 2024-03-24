@@ -5,6 +5,8 @@ import WordGroup from "./WordGroup";
 import { cn, scrollToIfNotVisible } from "@/lib/utils";
 import TouchAreaOverlay from "./TouchAreaOverlay";
 import { useGetArticleWords } from "@/lib/hooks/useGetArticleWords";
+import { clientApi } from "@/utils/trpc";
+import { Skeleton } from "./skeleton";
 
 interface Props {
   id: number;
@@ -27,7 +29,9 @@ const getNextWordIndex = (
 };
 
 export default function ArticleText({ id }: Props) {
-  const [isLoading, words] = useGetArticleWords(id);
+  const [words, _] = clientApi.article.getArticleWords.useSuspenseQuery({
+    id: id,
+  });
 
   const [selectedWord, setSelectedWord] = useState<Word | null>(null);
   const onWordClick = (w: Word) => {
@@ -106,3 +110,15 @@ export default function ArticleText({ id }: Props) {
     </>
   );
 }
+export const ArticleTextLoading = () => {
+  return (
+    <div className="flex-col items-center justify-center space-y-2">
+      <Skeleton className="h-4 w-[80dvw]" />
+      <Skeleton className="h-4 w-[80dvw]" />
+      <Skeleton className="h-4 w-[80dvw]" />
+      <Skeleton className="h-4 w-[80dvw]" />
+      <Skeleton className="h-4 w-[80dvw]" />
+      <Skeleton className="h-4 w-[80dvw]" />
+    </div>
+  );
+};

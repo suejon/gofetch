@@ -1,18 +1,21 @@
+"use client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { SheetTrigger, SheetContent, Sheet } from "@/components/ui/sheet";
 import { siteConfig } from "@/config/site";
 import dog from "../../../public/gofetch-dog.svg";
 import Image from "next/image";
+import { useState } from "react";
 
 export default function Header() {
+  const [open, setOpen] = useState(false);
   return (
     <header className="flex items-center justify-between px-6 py-4 md:px-8 lg:px-12">
       <Link href="/">
         <Image priority src={dog} alt="gofetch" className="h-10 w-10" />
         <span className="sr-only">gofetch</span>
       </Link>
-      <Sheet>
+      <Sheet open={open} onOpenChange={(val) => setOpen(val)}>
         <SheetTrigger asChild>
           <Button className="lg:hidden" size="icon" variant="outline">
             <svg
@@ -38,6 +41,7 @@ export default function Header() {
           <nav>
             {siteConfig.nav.map((item) => (
               <Link
+                onClick={() => setOpen(false)}
                 key={item.name}
                 className="block px-4 py-2 text-lg font-semibold text-gray-600 hover:text-black dark:text-white dark:hover:text-gray-200"
                 href={item.path}
@@ -52,6 +56,7 @@ export default function Header() {
       <div className="hidden lg:block">
         {siteConfig.nav.map((item) => (
           <Link
+            onClick={() => setOpen(false)}
             key={item.name}
             className="ml-4 text-base font-medium text-gray-600 hover:text-black dark:text-white dark:hover:text-gray-200"
             href={item.path}

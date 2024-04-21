@@ -1,5 +1,3 @@
-import { api } from "@/server/routers/_app";
-
 async function fetchArticle(url) {
     fetch(url)
     .then(response => {
